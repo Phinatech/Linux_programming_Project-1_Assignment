@@ -1,0 +1,6 @@
+[2026-03-11 15:04:34] [INFO] backup_tool started
+[2026-03-11 15:04:34] [INFO] Source file created
+[2026-03-11 15:04:34] [INFO] Read 161 bytes from source_data.txt
+[2026-03-11 15:04:34] [INFO] Backup written to backup_output/backup_20260311_150434.bak (161 bytes)
+[2026-03-11 15:04:34] [INFO] Backup directory verified: backup_output (mode=755)
+[2026-03-11 15:04:34] [INFO] backup_tool completed successfully
