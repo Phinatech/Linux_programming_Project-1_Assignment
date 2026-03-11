@@ -1,0 +1,86 @@
+═══════════════════════════════════════════════════════════════════════
+  PROJECT 4 — Signal Handling Terminal Demonstration
+  monitor_service  |  Compiled and run on Linux x86-64 / GCC 13.3.0
+═══════════════════════════════════════════════════════════════════════
+
+── STEP 1: Compile ────────────────────────────────────────────────────
+
+$ gcc -Wall -o monitor_service monitor_service.c
+$
+
+  (No warnings — clean compilation)
+
+── STEP 2: Start the service ──────────────────────────────────────────
+
+$ ./monitor_service &
+[1] 53
+
+[Monitor Service] Started at 2026-03-11 13:28:48  PID=53
+[Monitor Service] Handlers registered: SIGINT | SIGUSR1 | SIGTERM
+[Monitor Service] Send signals with:
+  kill -SIGUSR1 53
+  kill -SIGINT  53
+  kill -SIGTERM 53
+
+[Monitor Service] 2026-03-11 13:28:48 — System running normally...
+[Monitor Service] 2026-03-11 13:28:53 — System running normally...
+
+── STEP 3: Send SIGUSR1 (administrator status request) ────────────────
+
+$ kill -SIGUSR1 53
+
+[Monitor Service] SIGUSR1 received — System status requested by administrator.
+[Monitor Service] 2026-03-11 13:28:55 — System running normally...
+
+$ kill -SIGUSR1 53
+
+[Monitor Service] SIGUSR1 received — System status requested by administrator.
+[Monitor Service] 2026-03-11 13:28:56 — System running normally...
+
+  → Service prints status message and continues running.
+    The heartbeat loop is NOT interrupted.
+
+── STEP 4: Send SIGINT (graceful shutdown) ─────────────────────────────
+
+$ kill -SIGINT 53
+
+[Monitor Service] SIGINT received — shutting down safely.
+[Monitor Service] Monitor Service shutting down safely.
+[Monitor Service] 2026-03-11 13:28:57 — Cleanup complete. Goodbye.
+
+[1]+  Done     ./monitor_service
+
+$ kill -0 53
+bash: kill: (53) — No such process
+
+  → Process exited cleanly. Loop broke, cleanup ran, exit code 0.
+
+═══════════════════════════════════════════════════════════════════════
+
+── STEP 5: SIGTERM demonstration (separate run, PID=64) ───────────────
+
+$ ./monitor_service &
+[1] 64
+
+[Monitor Service] Started at 2026-03-11 13:29:03  PID=64
+[Monitor Service] Handlers registered: SIGINT | SIGUSR1 | SIGTERM
+[Monitor Service] Send signals with:
+  kill -SIGUSR1 64
+  kill -SIGINT  64
+  kill -SIGTERM 64
+
+[Monitor Service] 2026-03-11 13:29:03 — System running normally...
+[Monitor Service] 2026-03-11 13:29:08 — System running normally...
+
+$ kill -SIGTERM 64
+
+[Monitor Service] SIGTERM received — Emergency shutdown signal received.
+
+[1]+  Done     ./monitor_service
+
+  → Process printed emergency message and called _exit() immediately.
+    No cleanup code ran — consistent with emergency shutdown semantics.
+
+═══════════════════════════════════════════════════════════════════════
+  All three signal handlers verified working as specified.
+═══════════════════════════════════════════════════════════════════════
